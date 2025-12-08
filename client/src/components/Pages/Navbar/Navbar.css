@@ -1,0 +1,86 @@
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* background: plum; */
+  /* padding: 0rem 2.5rem; */
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+
+  border-bottom: 1px dotted black;
+  padding: 0.875rem 2rem;
+  background: white;
+}
+
+.row-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-left-part {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.logo {
+  height: 75px;
+  width: 75px;
+}
+
+.image-containers {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+.image-containers li {
+  list-style-type: none;
+}
+.bus-img,
+.train-img {
+  height: 60px;
+  width: 60px;
+  cursor: pointer;
+}
+
+.nav-link {
+  position: relative;
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
+
+.nav-link:hover {
+  filter: grayscale(0%);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #d63941;
+  transition: width 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover:after {
+  width: 100%;
+}
+
+.row-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logout-btn {
+  border: none;
+  outline: none;
+  background: #d63941;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}

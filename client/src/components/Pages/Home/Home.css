@@ -1,0 +1,146 @@
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.search-container select,
+input {
+  padding: 1rem;
+  width: 250px;
+}
+
+.search-btn {
+  padding: 1rem;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: white;
+  width: 250px;
+  background: #d63941;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.bus-details-main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: #fdfdfd;
+}
+
+.bus-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.bus-cart-1 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 33%;
+}
+
+.bus-name {
+  font-size: 1.2rem;
+  color: #27272a;
+}
+.bus-type {
+  font-size: 1rem;
+  color: rgba(29, 29, 29, 0.64);
+}
+
+.bus-cart-2 {
+  display: flex;
+  gap: 2.5rem;
+  width: 33%;
+  justify-content: center;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: lightgray;
+  padding: 0.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  height: fit-content;
+}
+.rating-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  background: #007b28;
+  color: white;
+  font-weight: bold;
+  padding: 0.3rem;
+  width: 50px;
+  border-radius: 8px;
+  /* flex-direction: column; */
+}
+.rating-persons-container {
+  /* background: lightgray; */
+  text-align: center;
+  font-weight: 700;
+  /* padding: 0.5rem; */
+  width: 50px;
+}
+
+.bus-cart-3 {
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0px;
+}
+
+.view-seats-btn {
+  padding: 1rem;
+  width: fit-content;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  color: white;
+  background: #d63941;
+  font-weight: bold;
+  cursor: pointer;
+}
+/* .boarding-duration-container {
+  display: flex;
+  background: plum;
+} */
+.duration-container {
+  font-size: 0.875rem;
+  /* color: #d63941; */
+  color: rgba(29, 29, 29, 0.64);
+  font-weight: 600;
+}
+
+.boarding-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.pickup-point {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0px;
+}
+
+.droping-point {
+  font-size: 1.3rem;
+  font-weight: 400;
+}

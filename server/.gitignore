@@ -1,0 +1,36 @@
+/node_modules
+# /client/node_modules
+# /server/node_modules
+
+# *.log
+# npm-debug.log*
+# /build
+# /dist
+# .idea/
+# .vscode/
+# *.swp
+# *.swo
+
+
+# dependencies
+/server/node_modules
+/node_modules
+
+# environment variables
+.env
+
+# logs
+*.log
+
+# debug
+npm-debug.log*
+
+# production
+/build
+/dist
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
