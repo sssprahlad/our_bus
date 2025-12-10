@@ -56,9 +56,12 @@
   padding: 1rem;
   gap: 1.5rem;
 }
-.tabs-container h5 {
+.tabs-container button {
   font-size: 1.1rem;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
   /* color: #4b4b4b; */
   /* color: #797777; */
 }
@@ -241,6 +244,17 @@
   border-radius: 6px;
   cursor: pointer;
 }
+.seat-box-double {
+  width: 35px;
+  height: 50px;
+  margin: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
 .selected {
   background-color: #d63941;
@@ -281,7 +295,7 @@
 .active-tab {
   color: #d63941;
   font-weight: bold;
-  border-bottom: 2px solid #d63941;
+  border-bottom: 3px solid #d63941 !important;
 }
 
 .seats-infomation-cont {
@@ -357,6 +371,7 @@ th {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   min-width: 300px;
   width: 40%;
+  height: fit-content;
 }
 
 .org-container {
@@ -505,4 +520,17 @@ th {
 }
 .css-1lj39kh-MuiAccordionDetails-root {
   padding: 0px !important;
+}
+
+.dropping-btn {
+  padding: 1rem;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: white;
+  /* width: 250px; */
+  background: #d63941;
+  font-weight: bold;
+  cursor: pointer;
 }

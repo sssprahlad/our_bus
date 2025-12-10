@@ -9,7 +9,8 @@ exports.addBusDetails = (req, res) => {
     busType,
     totalSeats,
     totalSleeper,
-    price,
+    seatPrice,
+    sleeperPrice,
     fromCity,
     toCity,
     distanceKm,
@@ -29,7 +30,8 @@ exports.addBusDetails = (req, res) => {
     !busType ||
     totalSeats == null ||
     totalSleeper == null ||
-    price == null ||
+    seatPrice == null ||
+    sleeperPrice == null ||
     !fromCity ||
     !toCity ||
     distanceKm == null ||
@@ -50,7 +52,8 @@ exports.addBusDetails = (req, res) => {
       busType,
       totalSeats,
       totalSleeper,
-      price,
+      seatPrice,
+      sleeperPrice,
       fromCity,
       toCity,
       distanceKm,
@@ -84,7 +87,8 @@ exports.updateBusDetails = (req, res) => {
     busType,
     totalSeats,
     totalSleeper,
-    price,
+    seatPrice,
+    sleeperPrice,
     fromCity,
     toCity,
     distanceKm,
@@ -112,7 +116,8 @@ exports.updateBusDetails = (req, res) => {
         busType,
         totalSeats,
         totalSleeper,
-        price,
+        seatPrice,
+        sleeperPrice,
         fromCity,
         toCity,
         distanceKm,

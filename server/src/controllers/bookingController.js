@@ -26,6 +26,7 @@ exports.getBookingDetails = (req, res) => {
       travelDate,
       boardingPoint,
       dropingPoint,
+      seatType,
     } = booking;
 
     if (
@@ -38,7 +39,8 @@ exports.getBookingDetails = (req, res) => {
       !phoneNumber ||
       !travelDate ||
       !boardingPoint ||
-      !dropingPoint
+      !dropingPoint ||
+      !seatType
     ) {
       failed.push({ index, seatId, reason: "Missing fields" });
       processed++;
@@ -64,9 +66,10 @@ exports.getBookingDetails = (req, res) => {
       travelDate,
       boardingPoint,
       dropingPoint,
+      seatType,
       (err) => {
         if (err) {
-          failed.push({ index, seatId, reason: err.message });
+          failed.push({ index, seatId, seatType, reason: err.message });
         } else {
           successCount++;
         }

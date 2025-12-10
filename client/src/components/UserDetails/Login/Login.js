@@ -40,9 +40,8 @@ const Login = () => {
       if (data.status === 200) {
         setTimeout(() => {
           localStorage.setItem("token", data.token);
-          //   localStorage.setItem("orgName", data.organisation_name);
-          //   localStorage.setItem("adminName", data.admin_name);
-          //   localStorage.setItem("orgId", data.org_id);
+          localStorage.setItem("userId", data.user_id);
+
           setLoading(false);
           setResponseData(data);
           navigate("/");

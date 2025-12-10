@@ -21,7 +21,8 @@ db.run(`CREATE TABLE IF NOT EXISTS buses(
     bus_type TEXT NOT NULL,
     total_seats INTEGER NOT NULL,
     total_sleeper INTEGER DEFAULT 0,
-    price INTEGER NOT NULL,
+    seat_price INTEGER NOT NULL,
+    sleeper_price INTEGER NOT NULL,
     from_city TEXT NOT NULL,
     to_city TEXT NOT NULL,
     distance_km INTEGER NOT NULL,
@@ -55,6 +56,7 @@ db.run(`
     travel_date TEXT NOT NULL,
     boarding_point TEXT NOT NULL,
     droping_point TEXT NOT NULL,
+    seat_type TEXT NOT NULL,
     FOREIGN KEY (bus_id) REFERENCES buses(id),
     FOREIGN KEY (seat_id) REFERENCES seats(id),
     FOREIGN KEY (user_id) REFERENCES users(id)

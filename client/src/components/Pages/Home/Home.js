@@ -174,7 +174,7 @@ const Home = () => {
                       <FaRupeeSign
                         style={{ fontSize: "1.1rem", marginBottom: "-2px" }}
                       />
-                      <p className="price">{eachBus?.price}</p>
+                      <p className="price">{eachBus?.seat_price}</p>
                     </div>
 
                     <button
