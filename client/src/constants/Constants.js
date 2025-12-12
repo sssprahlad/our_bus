@@ -1,4 +1,5 @@
-export const API_BASE_URL = "http://localhost:5050";
+export const API_BASE_URL = "https://our-bus.onrender.com";
+//   || "http://localhost:5050"
 
 export const LOGIN_API = `${API_BASE_URL}/api/user/login`;
 export const REGISTER_API = `${API_BASE_URL}/api/user/register`;

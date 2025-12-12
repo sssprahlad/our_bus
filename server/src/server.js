@@ -12,10 +12,7 @@ const port = process.env.PORT;
 
 const app = express();
 
-const allowedOrigins = [
-  // "https://evallo-hrms-task.vercel.app",
-  "http://localhost:3000",
-];
+const allowedOrigins = ["https://our-bus.vercel.app", "http://localhost:3000"];
 
 const corsOptions = {
   origin: function (origin, callback) {
