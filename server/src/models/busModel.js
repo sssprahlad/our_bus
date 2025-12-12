@@ -7,7 +7,8 @@ module.exports = {
     busType,
     totalSeats,
     totalSleeper,
-    price,
+    seatPrice,
+    sleeperPrice,
     fromCity,
     toCity,
     distanceKm,
@@ -18,14 +19,24 @@ module.exports = {
     stops,
     callback
   ) => {
+    // if (typeof stops === "string") {
+    //   stops = JSON.parse(stops);
+    // }
+
     if (typeof stops === "string") {
-      stops = JSON.parse(stops);
+      stops = stops.trim();
+      try {
+        stops = JSON.parse(stops);
+      } catch (e) {
+        console.log("Stops JSON error:", e.message);
+        return callback(e);
+      }
     }
 
     const query = `
     INSERT INTO buses 
-    (bus_name, bus_type, total_seats, total_sleeper, price, from_city, to_city, distance_km, departure_time, arrival_time, duration, bus_image)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (bus_name, bus_type, total_seats, total_sleeper, seat_price, sleeper_price, from_city, to_city, distance_km, departure_time, arrival_time, duration, bus_image)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
     const params = [
@@ -33,7 +44,8 @@ module.exports = {
       busType,
       totalSeats,
       totalSleeper,
-      price,
+      seatPrice,
+      sleeperPrice,
       fromCity,
       toCity,
       distanceKm,
@@ -44,7 +56,10 @@ module.exports = {
     ];
 
     db.run(query, params, function (err) {
-      if (err) return callback(err);
+      if (err) {
+        console.log("Bus Insert Error:", err.message);
+        return callback(err);
+      }
 
       const busId = this.lastID;
 
@@ -88,7 +103,8 @@ module.exports = {
     busType,
     totalSeats,
     totalSleeper,
-    price,
+    seatPrice,
+    sleeperPrice,
     fromCity,
     toCity,
     distanceKm,
@@ -101,7 +117,7 @@ module.exports = {
   ) => {
     const query = `
       UPDATE buses 
-      SET bus_name=?, bus_type=?, total_seats=?, total_sleeper=?, price=?, from_city=?, to_city=?, distance_km=?, departure_time=?, arrival_time=?, duration=?, bus_image=?
+      SET bus_name=?, bus_type=?, total_seats=?, total_sleeper=?, seat_price=?, sleeper_price, from_city=?, to_city=?, distance_km=?, departure_time=?, arrival_time=?, duration=?, bus_image=?
       WHERE id=?
     `;
 
@@ -110,7 +126,8 @@ module.exports = {
       busType,
       totalSeats,
       totalSleeper,
-      price,
+      seatPrice,
+      sleeperPrice,
       fromCity,
       toCity,
       distanceKm,

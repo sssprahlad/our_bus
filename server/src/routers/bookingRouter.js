@@ -17,4 +17,10 @@ router.get(
   bookingControler.getBookingDetailsByBus
 );
 
+router.get(
+  "/my-bookings/:userId",
+  authMiddleware,
+  bookingControler.myBookingsHistory
+);
+
 module.exports = router;

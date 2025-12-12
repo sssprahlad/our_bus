@@ -6,7 +6,7 @@ exports.inserSeats = (busId, busType, totalSeats, totalSleeper) => {
     for (let i = 1; i <= totalSeats; i++) {
       db.run(
         `INSERT INTO seats (bus_id, seat_number, seat_type) VALUES (?, ?, ?)`,
-        [busId, "A" + i, "seater"],
+        [busId, +i, "seater"],
         (err) => {
           if (err) console.log("Seat Insert Error:", err.message);
         }
@@ -21,7 +21,7 @@ exports.inserSeats = (busId, busType, totalSeats, totalSleeper) => {
     for (let i = 1; i <= totalSleeper; i++) {
       db.run(
         `INSERT INTO seats (bus_id, seat_number, seat_type) VALUES (?, ?, ?)`,
-        [busId, "L" + i, "sleeper"],
+        [busId, +i, "sleeper"],
         (err) => {
           if (err) console.log("Sleeper Insert Error:", err.message);
         }

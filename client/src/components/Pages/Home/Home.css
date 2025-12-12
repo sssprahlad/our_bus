@@ -1,13 +1,16 @@
 .search-container {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
+  padding: 0.875rem 2rem;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
-.search-container select,
-input {
+.search-container-select {
   padding: 1rem;
-  width: 250px;
+  min-width: 230px;
+  /* width: 100%; */
 }
 
 .search-btn {
@@ -17,10 +20,23 @@ input {
   border-radius: 8px;
   font-size: 1rem;
   color: white;
-  width: 250px;
+  min-width: 250px;
+  /* width: 100%; */
   background: #d63941;
   font-weight: bold;
   cursor: pointer;
+}
+@media (max-width: 576px) {
+  .search-container select,
+  input {
+    width: 100%;
+  }
+  .search-btn {
+    width: 100%;
+  }
+  .navbar-container {
+    width: 100%;
+  }
 }
 
 .bus-details-main-container {
@@ -36,6 +52,26 @@ input {
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-card {
+  display: none;
+  /* justify-content: space-between;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
+}
+@media (max-width: 769px) {
+  .mobile-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  .bus-container {
+    display: none;
+  }
 }
 
 .bus-cart-1 {

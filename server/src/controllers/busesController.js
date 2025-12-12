@@ -9,7 +9,8 @@ exports.addBusDetails = (req, res) => {
     busType,
     totalSeats,
     totalSleeper,
-    price,
+    seatPrice,
+    sleeperPrice,
     fromCity,
     toCity,
     distanceKm,
@@ -29,7 +30,8 @@ exports.addBusDetails = (req, res) => {
     !busType ||
     totalSeats == null ||
     totalSleeper == null ||
-    price == null ||
+    seatPrice == null ||
+    sleeperPrice == null ||
     !fromCity ||
     !toCity ||
     distanceKm == null ||
@@ -50,7 +52,8 @@ exports.addBusDetails = (req, res) => {
       busType,
       totalSeats,
       totalSleeper,
-      price,
+      seatPrice,
+      sleeperPrice,
       fromCity,
       toCity,
       distanceKm,
@@ -65,9 +68,10 @@ exports.addBusDetails = (req, res) => {
             .status(400)
             .json({ status: 400, message: "failed to add bus details" });
 
-        return res
-          .status(200)
-          .json({ status: 200, message: "bus details added successfully" });
+        return res.status(200).json({
+          status: 200,
+          message: `${busName} bus details added successfully`,
+        });
       }
     );
   } catch (error) {
@@ -84,7 +88,8 @@ exports.updateBusDetails = (req, res) => {
     busType,
     totalSeats,
     totalSleeper,
-    price,
+    seatPrice,
+    sleeperPrice,
     fromCity,
     toCity,
     distanceKm,
@@ -112,7 +117,8 @@ exports.updateBusDetails = (req, res) => {
         busType,
         totalSeats,
         totalSleeper,
-        price,
+        seatPrice,
+        sleeperPrice,
         fromCity,
         toCity,
         distanceKm,

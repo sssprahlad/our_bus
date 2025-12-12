@@ -40,9 +40,8 @@ const Login = () => {
       if (data.status === 200) {
         setTimeout(() => {
           localStorage.setItem("token", data.token);
-          //   localStorage.setItem("orgName", data.organisation_name);
-          //   localStorage.setItem("adminName", data.admin_name);
-          //   localStorage.setItem("orgId", data.org_id);
+          localStorage.setItem("userId", data.user_id);
+
           setLoading(false);
           setResponseData(data);
           navigate("/");
@@ -62,10 +61,15 @@ const Login = () => {
       <form className="form-container" onSubmit={handleLoginSubmit}>
         <div className="org-container">
           <div className="bg-icon">
-            <CiLock style={{ color: "#ffffff", fontSize: "1.2rem" }} />
+            {/* <CiLock style={{ color: "#ffffff", fontSize: "1.2rem" }} /> */}
+            <img
+              src="/images/bus-logo.png"
+              alt="logo"
+              style={{ height: "50px", width: "50px" }}
+            />
           </div>
           <h2>Sign In</h2>
-          <p>Manage your organization efficiently</p>
+          {/* <p>Manage your organization efficiently</p> */}
         </div>
 
         <div className="form-controll">

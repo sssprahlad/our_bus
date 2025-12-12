@@ -7,6 +7,9 @@ import { FaRupeeSign } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
 import { CiLock } from "react-icons/ci";
 import { IoIosContact } from "react-icons/io";
+import { FaArrowDownLong } from "react-icons/fa6";
+import Radio from "@mui/material/Radio";
+import { pink } from "@mui/material/colors";
 
 import {
   Accordion,
@@ -18,6 +21,7 @@ import {
   TextField,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { POST_GET_BOOKING_API } from "../../../constants/Constants";
 
 const ModelPopUp = ({
   searchBuses,
@@ -26,15 +30,24 @@ const ModelPopUp = ({
   selectedBusDetails,
 }) => {
   const [passengerDetails, setPassengerDetails] = useState({
+    busId: "",
+    seatNumber: "",
+    userId: "",
     userName: "",
     age: "",
     gender: "",
     phoneNumber: "",
+    travelDate: "",
     boardingPoint: "",
-    droppingPoint: "",
-    // test:""
+    dropingPoint: "",
+    seatType: "",
+    boardingPointTime: "",
+    dropingPointTime: "",
   });
-  const [selectedSeatsList, setSelectedSeatsList] = useState([]);
+
+  const [bookedSeats, setBookedSeats] = useState([]);
+
+  const [formValid, setFormValid] = useState(false);
 
   const [tabs, setTabs] = useState({
     seatsTab: true,
@@ -88,6 +101,10 @@ const ModelPopUp = ({
   ];
 
   const [activeTab, setActiveTab] = useState("seats");
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  console.log(searchBuses, "search buses");
+  console.log(selectedBusDetails, "select");
 
   const [seatList, setSeatList] = useState(
     Array.from({ length: 30 }, (_, i) => ({
@@ -95,41 +112,214 @@ const ModelPopUp = ({
       selected: false,
     }))
   );
+  const [selectedSeatsList, setSelectedSeatsList] = useState([]);
+  //const [sortedSelectedSeatsList, setSortedSelectedSeatsList] = useState();
 
   const [sleeperList, setSleeperList] = useState(
-    Array.from({ length: 30 }, (_, i) => ({
+    Array.from({ length: 0 }, (_, i) => ({
       id: i + 1,
       selected: false,
     }))
   );
 
+  const [passengerDetailsList, setPassengerDetailsList] = useState([]);
+
+  const sortedSelectedSeatsList = selectedSeatsList.sort((a, b) => a.id - b.id);
+
+  const fetchBoogingSeatsData = async () => {
+    const response = await fetch(
+      `${POST_GET_BOOKING_API}/${selectedBusDetails?.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const data = await response.json();
+
+    setBookedSeats(data?.buses?.bookings || []);
+
+    console.log(data, "booking bus list");
+  };
+
   useEffect(() => {
+    if (!sortedSelectedSeatsList || sortedSelectedSeatsList.length === 0)
+      return;
+
+    const newList = sortedSelectedSeatsList.map((seat) => ({
+      busId: selectedBusDetails.id,
+      seatNumber: seat.id,
+      userId: localStorage.getItem("userId"),
+      userName: "",
+      gender: "",
+      age: "",
+      phoneNumber: "",
+      travelDate: searchBuses?.date,
+      boardingPoint: passengerDetails.boardingPoint,
+      dropingPoint: passengerDetails.dropingPoint,
+      seatType: seat.type,
+      boardingPointTime: passengerDetails.boardingPointTime,
+      dropingPointTime: passengerDetails.dropingPointTime,
+    }));
+
+    setPassengerDetailsList(newList);
+  }, [sortedSelectedSeatsList, passengerDetails]);
+
+  useEffect(() => {
+    if (
+      !Array.isArray(passengerDetailsList) ||
+      passengerDetailsList.length === 0
+    ) {
+      setFormValid(false);
+      return;
+    }
+
+    const isValid = passengerDetailsList.every(
+      (p) =>
+        p.userName?.trim()?.length > 0 &&
+        p.age?.trim()?.length > 0 &&
+        p.gender?.trim()?.length > 0 &&
+        p.phoneNumber?.trim()?.length > 0
+    );
+
+    setFormValid(isValid);
+  }, [passengerDetailsList]);
+
+  console.log("Are all passenger fields valid? =>", formValid);
+
+  console.log(passengerDetailsList, "passenger details");
+
+  useEffect(() => {
+    fetchBoogingSeatsData();
+  }, []);
+
+  // useEffect(() => {
+  //   if (!selectedBusDetails) return;
+
+  //   // Create SEATER seats
+  //   if (selectedBusDetails?.total_seats) {
+  //     setSeatList(
+  //       Array.from({ length: selectedBusDetails.total_seats }, (_, i) => {
+  //         const seatId = i + 1;
+  //         const booked = bookedSeats.find(
+  //           (b) => b.seat_type === "seater" && b.seat_number === seatId
+  //         );
+  //         return {
+  //           id: seatId,
+  //           selected: false,
+  //           isBooked: !!booked,
+  //           gender: booked?.gender || null,
+  //         };
+  //       })
+  //     );
+  //   }
+
+  //   // Create SLEEPER seats
+  //   if (selectedBusDetails?.total_sleeper) {
+  //     setSleeperList(
+  //       Array.from({ length: selectedBusDetails.total_sleeper }, (_, i) => {
+  //         const seatId = i + 1;
+  //         const booked = bookedSeats.find(
+  //           (b) => b.seat_type === "sleeper" && b.seat_number === seatId
+  //         );
+  //         return {
+  //           id: seatId,
+  //           selected: false,
+  //           isBooked: !!booked,
+  //           gender: booked?.gender || null,
+  //         };
+  //       })
+  //     );
+  //   }
+  // }, [selectedBusDetails, bookedSeats]);
+
+  useEffect(() => {
+    if (!selectedBusDetails || !searchBuses?.date) return;
+
+    const formattedTravelDate = new Date(searchBuses?.date)
+      .toISOString()
+      .split("T")[0]; // ensure YYYY-MM-DD
+
+    // Create SEATER seats
     if (selectedBusDetails?.total_seats) {
       setSeatList(
-        Array.from({ length: selectedBusDetails.total_seats }, (_, i) => ({
-          id: i + 1,
-          selected: false,
-        }))
+        Array.from({ length: selectedBusDetails.total_seats }, (_, i) => {
+          const seatId = i + 1;
+
+          const booked = bookedSeats.find(
+            (b) =>
+              b.seat_type === "seater" &&
+              b.seat_number === seatId &&
+              b.travel_date === formattedTravelDate
+          );
+
+          return {
+            id: seatId,
+            selected: false,
+            isBooked: !!booked, // booked only if travel_date matches
+            gender: booked?.gender || null,
+          };
+        })
       );
     }
 
+    // Create SLEEPER seats
     if (selectedBusDetails?.total_sleeper) {
       setSleeperList(
-        Array.from({ length: selectedBusDetails.total_sleeper }, (_, i) => ({
-          id: i + 1,
-          selected: false,
-        }))
+        Array.from({ length: selectedBusDetails.total_sleeper }, (_, i) => {
+          const seatId = i + 1;
+
+          const booked = bookedSeats.find(
+            (b) =>
+              b.seat_type === "sleeper" &&
+              b.seat_number === seatId &&
+              b.travel_date === formattedTravelDate
+          );
+
+          return {
+            id: seatId,
+            selected: false,
+            isBooked: !!booked,
+            gender: booked?.gender || null,
+          };
+        })
       );
     }
-  }, [selectedBusDetails]);
+  }, [selectedBusDetails, bookedSeats, searchBuses?.date]);
 
-  const handleInputChange = (e) => {
+  const seatsPerRow = sleeperList.length === 0 ? 4 : 3;
+
+  const handleInputChange = (index, e) => {
     const { name, value } = e.target;
 
-    setPassengerDetails({ ...passengerDetails, [name]: value });
+    setPassengerDetailsList((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [name]: value,
+      };
+      return updated;
+    });
+
+    //setPassengerDetails({ ...passengerDetails, [name]: value });
   };
 
   console.log(selectedSeatsList, "select seats");
+
+  useEffect(() => {
+    const amount = sortedSelectedSeatsList.reduce((sum, seat) => {
+      return (
+        sum +
+        (seat.type === "sleeper"
+          ? selectedBusDetails?.sleeper_price
+          : selectedBusDetails?.seat_price)
+      );
+    }, 0);
+
+    setTotalAmount(amount);
+  }, [sortedSelectedSeatsList]);
 
   const boardingDropPointing = () => {
     const boardingData = busDrops.find(
@@ -147,11 +337,24 @@ const ModelPopUp = ({
         setPassengerDetails({
           ...passengerDetails,
           boardingPoint: bp.point,
+          boardingPointTime: bp.time,
+        });
+        setPassengerDetailsList({
+          ...passengerDetailsList,
+          boardingPoint: bp.point,
+          boardingPointTime: bp.time,
         });
       } else {
         setPassengerDetails({
           ...passengerDetails,
-          droppingPoint: bp.point,
+          dropingPoint: bp.point,
+          dropingPointTime: bp.time,
+        });
+
+        setPassengerDetailsList({
+          ...passengerDetailsList,
+          dropingPoint: bp.point,
+          dropingPointTime: bp.time,
         });
       }
     };
@@ -184,7 +387,6 @@ const ModelPopUp = ({
                   className="input-radio"
                   type="radio"
                   name="boardingPoint"
-                  // onChange={handleInputChange}
                   checked={passengerDetails?.boardingPoint === bp.point}
                 />
               </div>
@@ -194,9 +396,7 @@ const ModelPopUp = ({
         <div className="boarding-point-container">
           <div className="boarding-details-cont">
             <h3>Dropping points</h3>
-            <p className="drop-select-text">
-              {passengerDetails?.droppingPoint}
-            </p>
+            <p className="drop-select-text">{passengerDetails?.dropingPoint}</p>
           </div>
           <div className="dropdown-list">
             {dropingData?.dropping_points?.map((dp, index) => (
@@ -212,9 +412,8 @@ const ModelPopUp = ({
                 <input
                   className="input-radio"
                   type="radio"
-                  name="droppingPoint"
-                  //  onChange={handleInputChange}
-                  checked={passengerDetails?.droppingPoint === dp.point}
+                  name="dropingPoint"
+                  checked={passengerDetails?.dropingPoint === dp.point}
                 />
               </div>
             ))}
@@ -226,103 +425,214 @@ const ModelPopUp = ({
 
   const seatsAlignment = () => {
     const handleSeatClick = (seatId) => {
+      const seat = seatList.find((s) => s.id === seatId);
+      if (seat?.isBooked) return;
+
       setSeatList((prev) =>
         prev.map((s) => (s.id === seatId ? { ...s, selected: !s.selected } : s))
       );
 
       setSelectedSeatsList((prev) => {
-        const exists = prev.find((x) => x.type === "seat" && x.id === seatId);
-
-        if (exists) {
-          return prev.filter((x) => !(x.type === "seat" && x.id === seatId));
-        } else {
-          return [...prev, { type: "seat", id: seatId }];
-        }
+        const exists = prev.find((x) => x.type === "seater" && x.id === seatId);
+        return exists
+          ? prev.filter((x) => !(x.type === "seater" && x.id === seatId))
+          : [...prev, { type: "seater", id: seatId }];
       });
     };
 
-    const handleSleeperClick = (sleeperId) => {
+    const handleSleeperClick = (id) => {
+      const seat = sleeperList.find((s) => s.id === id);
+      if (seat?.isBooked) return; // ❌ block booked seat
+
       setSleeperList((prev) =>
-        prev.map((s) =>
-          s.id === sleeperId ? { ...s, selected: !s.selected } : s
-        )
+        prev.map((s) => (s.id === id ? { ...s, selected: !s.selected } : s))
       );
 
       setSelectedSeatsList((prev) => {
-        const exists = prev.find(
-          (x) => x.type === "sleeper" && x.id === sleeperId
-        );
-
-        if (exists) {
-          return prev.filter(
-            (x) => !(x.type === "sleeper" && x.id === sleeperId)
-          );
-        } else {
-          return [...prev, { type: "sleeper", id: sleeperId }];
-        }
+        const exists = prev.find((x) => x.type === "sleeper" && x.id === id);
+        return exists
+          ? prev.filter((x) => !(x.type === "sleeper" && x.id === id))
+          : [...prev, { type: "sleeper", id }];
       });
+    };
+
+    const getSeaterIcon = (seat) => {
+      if (seat.isBooked) {
+        return seat.gender === "Male"
+          ? "/images/seat-male-blocked.svg"
+          : "/images/seat-fem-blocked.webp";
+      }
+      return seat.selected
+        ? "/images/seater_selected.svg"
+        : "/images/seater_available.svg";
+    };
+
+    const getSleeperIcon = (seat) => {
+      if (seat.isBooked) {
+        return seat.gender === "Male"
+          ? "/images/bluegreysleeper.webp"
+          : "/images/pinkgreysleeper.webp";
+      }
+      return seat.selected
+        ? "/images/sl_selected.svg"
+        : "/images/sl_available.svg";
     };
 
     return (
       <div className="seats-main-container">
-        <div className="seats-container">
-          <div className="stearing-container">
-            <h5>Lower deck</h5>
-            <img src="/images/stearing.svg" alt="stearing" />
-          </div>
-          <div className="bus-seats-container">
-            {Array.from({ length: Math.ceil(seatList.length / 3) }).map(
-              (_, rowIndex) => {
-                const startIndex = rowIndex * 3;
-                const singleSeat = seatList[startIndex];
-                const doubleSeats = seatList.slice(
-                  startIndex + 1,
-                  startIndex + 3
-                );
+        <div className="scroll-wrapper">
+          <div className="scroll-content">
+            <div className="seats-container">
+              <div className="stearing-container">
+                <h5>Lower deck</h5>
+                <img src="/images/stearing.svg" alt="stearing" />
+              </div>
+              <div className="bus-seats-container">
+                {Array.from({
+                  length: Math.ceil(seatList.length / seatsPerRow),
+                }).map((_, rowIndex) => {
+                  const startIndex = rowIndex * seatsPerRow;
 
-                return (
-                  <div className="seats-row-container" key={rowIndex}>
-                    <div
-                      className={`single-seats`}
-                      //   ${
-                      //   singleSeat.selected ? "selected" : ""
-                      // }`}
-                      onClick={() => handleSeatClick(singleSeat.id)}
-                    >
-                      {/* <p>Seat {singleSeat.id}</p> */}
-                      <img
+                  // 4 seats case → [2 seats left + 2 seats right]
+                  if (seatsPerRow === 4) {
+                    const leftSeats = seatList.slice(
+                      startIndex,
+                      startIndex + 2
+                    );
+                    const rightSeats = seatList.slice(
+                      startIndex + 2,
+                      startIndex + 4
+                    );
+
+                    return (
+                      <div className="seats-row-container" key={rowIndex}>
+                        {/* Left 2 seats */}
+                        <div className="double-seats">
+                          {leftSeats.map((seat) => (
+                            <div
+                              key={seat.id}
+                              className="seat-box-double"
+                              onClick={() => handleSeatClick(seat.id)}
+                            >
+                              {/* <img
+                              className="seat-size"
+                              src={
+                                seat.selected
+                                  ? "/images/seater_selected.svg"
+                                  : "/images/seater_available.svg"
+                              }
+                              alt="seat"
+                            /> */}
+                              <img
+                                className="seat-size"
+                                src={getSeaterIcon(seat)}
+                                alt="seat"
+                              />
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                                <p style={{ fontSize: "0.75rem" }}>
+                                  {selectedBusDetails?.seat_price}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Right 2 seats */}
+                        <div className="double-seats">
+                          {rightSeats.map((seat) => (
+                            <div
+                              key={seat.id}
+                              className="seat-box-double"
+                              onClick={() => handleSeatClick(seat.id)}
+                            >
+                              {/* <img
+                              className="seat-size"
+                              src={
+                                seat.selected
+                                  ? "/images/seater_selected.svg"
+                                  : "/images/seater_available.svg"
+                              }
+                              alt="seat"
+                            /> */}
+                              <img
+                                className="seat-size"
+                                src={getSeaterIcon(seat)}
+                                alt="seat"
+                              />
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                                <p style={{ fontSize: "0.75rem" }}>
+                                  {" "}
+                                  {selectedBusDetails?.seat_price}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // 3 seats case → 1 single + 2 double
+                  const singleSeat = seatList[startIndex];
+                  const doubleSeats = seatList.slice(
+                    startIndex + 1,
+                    startIndex + 3
+                  );
+
+                  return (
+                    <div className="seats-row-container" key={rowIndex}>
+                      {/* single seat */}
+                      <div
+                        className="single-seats"
+                        onClick={() => handleSeatClick(singleSeat.id)}
+                      >
+                        {/* <img
                         className="seat-size"
                         src={
-                          singleSeat?.selected
+                          singleSeat.selected
                             ? "/images/seater_selected.svg"
                             : "/images/seater_available.svg"
                         }
                         alt="seat"
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FaRupeeSign style={{ fontSize: "0.75rem" }} />
-                        <p style={{ fontSize: "0.75rem" }}>200</p>
-                      </div>
-                    </div>
+                      /> */}
+                        <img
+                          className="seat-size"
+                          src={getSeaterIcon(singleSeat)}
+                          alt="seat"
+                        />
 
-                    {/* Double seats */}
-                    <div className="double-seats">
-                      {doubleSeats.map((seat) => (
-                        <div
-                          key={seat.id}
-                          className={`seat-box`}
-                          //   ${
-                          //   seat.selected ? "selected" : ""}`
-                          // }
-                          onClick={() => handleSeatClick(seat.id)}
-                        >
-                          {/* <p>Seat {seat.id}</p> */}
-                          <img
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                          <p style={{ fontSize: "0.75rem" }}>
+                            {" "}
+                            {selectedBusDetails?.seat_price}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* double seats */}
+                      <div className="double-seats">
+                        {doubleSeats.map((seat) => (
+                          <div
+                            key={seat.id}
+                            className="seat-box"
+                            onClick={() => handleSeatClick(seat.id)}
+                          >
+                            {/* <img
                             className="seat-size"
                             src={
                               seat.selected
@@ -330,84 +640,69 @@ const ModelPopUp = ({
                                 : "/images/seater_available.svg"
                             }
                             alt="seat"
-                          />
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <FaRupeeSign style={{ fontSize: "0.75rem" }} />
-                            <p style={{ fontSize: "0.75rem" }}>200</p>
+                          /> */}
+                            <img
+                              className="seat-size"
+                              src={getSeaterIcon(seat)}
+                              alt="seat"
+                            />
+
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                              <p style={{ fontSize: "0.75rem" }}>
+                                {" "}
+                                {selectedBusDetails?.seat_price}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-            )}
-          </div>
-        </div>
-
-        <div className="seats-container">
-          <div className="stearing-container">
-            <h5>Upper deck</h5>
-            {/* <img src="/images/stearing.svg" alt="stearing" /> */}
-          </div>
-          <div className="bus-seats-container">
-            {Array.from({ length: Math.ceil(sleeperList.length / 3) }).map(
-              (_, rowIndex) => {
-                const startIndex = rowIndex * 3;
-                const singleBerth = sleeperList[startIndex];
-                const doubleBerth = sleeperList.slice(
-                  startIndex + 1,
-                  startIndex + 3
-                );
-
-                return (
-                  <div className="sleeper-row-container" key={rowIndex}>
-                    <div
-                      className={`single-berths`}
-                      onClick={() => handleSleeperClick(singleBerth.id)}
-                    >
-                      <img
-                        className="sleeper-size"
-                        src={
-                          singleBerth?.selected
-                            ? "/images/sl_selected.svg"
-                            : "/images/sl_available.svg"
-                        }
-                        alt="seat"
-                      />
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FaRupeeSign style={{ fontSize: "0.75rem" }} />
-                        <p style={{ fontSize: "0.75rem" }}>200</p>
+                        ))}
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            </div>
 
-                    {/* Double berths */}
-                    <div className="double-berths">
-                      {doubleBerth?.map((sleeper) => (
+            {sleeperList?.length > 0 && (
+              <div className="seats-container">
+                <div className="stearing-container">
+                  <h5>Upper deck</h5>
+                  {/* <img src="/images/stearing.svg" alt="stearing" /> */}
+                </div>
+                <div className="bus-seats-container">
+                  {Array.from({
+                    length: Math.ceil(sleeperList.length / 3),
+                  }).map((_, rowIndex) => {
+                    const startIndex = rowIndex * 3;
+                    const singleBerth = sleeperList[startIndex];
+                    const doubleBerth = sleeperList.slice(
+                      startIndex + 1,
+                      startIndex + 3
+                    );
+
+                    return (
+                      <div className="sleeper-row-container" key={rowIndex}>
                         <div
-                          key={sleeper.id}
-                          className={`sleeper-box`}
-                          onClick={() => handleSleeperClick(sleeper.id)}
+                          className={`single-berths`}
+                          onClick={() => handleSleeperClick(singleBerth.id)}
                         >
-                          <img
+                          {/* <img
                             className="sleeper-size"
                             src={
-                              sleeper.selected
+                              singleBerth?.selected
                                 ? "/images/sl_selected.svg"
                                 : "/images/sl_available.svg"
                             }
                             alt="seat"
+                          /> */}
+                          <img
+                            className="sleeper-size"
+                            src={getSleeperIcon(singleBerth)}
+                            alt="seat"
                           />
+
                           <div
                             style={{
                               display: "flex",
@@ -415,14 +710,56 @@ const ModelPopUp = ({
                             }}
                           >
                             <FaRupeeSign style={{ fontSize: "0.75rem" }} />
-                            <p style={{ fontSize: "0.75rem" }}>200</p>
+                            <p style={{ fontSize: "0.75rem" }}>
+                              {" "}
+                              {selectedBusDetails?.sleeper_price}
+                            </p>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
+
+                        {/* Double berths */}
+                        <div className="double-berths">
+                          {doubleBerth?.map((sleeper) => (
+                            <div
+                              key={sleeper.id}
+                              className={`sleeper-box`}
+                              onClick={() => handleSleeperClick(sleeper.id)}
+                            >
+                              {/* <img
+                                className="sleeper-size"
+                                src={
+                                  sleeper.selected
+                                    ? "/images/sl_selected.svg"
+                                    : "/images/sl_available.svg"
+                                }
+                                alt="seat"
+                              /> */}
+                              <img
+                                className="sleeper-size"
+                                src={getSleeperIcon(sleeper)}
+                                alt="seat"
+                              />
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                                <p style={{ fontSize: "0.75rem" }}>
+                                  {" "}
+                                  {selectedBusDetails?.sleeper_price}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -434,7 +771,7 @@ const ModelPopUp = ({
               <tr>
                 <th>Seat Types</th>
                 <th>Seater</th>
-                <th>Sleeper</th>
+                {sleeperList?.length > 0 && <th>Sleeper</th>}
               </tr>
             </thead>
             <tbody>
@@ -448,9 +785,11 @@ const ModelPopUp = ({
                       alt="seat"
                     />
                   </td>
-                  <td>
-                    <img src={eachRow?.sleeper} alt="sleeper" />
-                  </td>
+                  {sleeperList?.length > 0 && (
+                    <td>
+                      <img src={eachRow?.sleeper} alt="sleeper" />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -460,7 +799,59 @@ const ModelPopUp = ({
     );
   };
 
+  const handleBookingTickets = async (e) => {
+    e.preventDefault();
+    if (!window.confirm("are you sure, confirm your tickets")) {
+      return;
+    }
+    try {
+      const response = await fetch(POST_GET_BOOKING_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          bookings: passengerDetailsList,
+        }),
+      });
+
+      const data = await response.json();
+      if (data?.status === 200) {
+        setPopUp(false);
+        fetchBoogingSeatsData();
+      }
+
+      console.log(data, "booking results");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const passengetInfo = () => {
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    };
+
+    const addOneDay = (dateStr) => {
+      const date = new Date(dateStr);
+
+      const nextDay = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+
+      return nextDay.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    };
+
     return (
       <div
         style={{
@@ -472,126 +863,76 @@ const ModelPopUp = ({
           overflow: "auto",
         }}
       >
-        {/* <form className="passenger-container">
-          <div className="form-group">
-            <p>Passenger Details</p>
-            <label htmlFor="userName">Name</label>
-            <div className="input-field-container">
-              <MdOutlineEmail style={{ height: "20px", width: "20px" }} />
-              <input
-                type="text"
-                placeholder="enter your email"
-                name="userName"
-                required
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="age">Age</label>
-            <div className="input-field-container">
-              <CiLock style={{ height: "20px", width: "20px" }} />
-              <input
-                type="text"
-                placeholder="enter your password"
-                name="age"
-                required
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="gender">Gender</label>
-            <div className="input-field-container">
-              <CiLock style={{ height: "20px", width: "20px" }} />
-              <input
-                type="text"
-                placeholder="enter your password"
-                name="gender"
-                required
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phoneNumber">Phone Number</label>
-            <div className="input-field-container">
-              <CiLock style={{ height: "20px", width: "20px" }} />
-              <input
-                type="text"
-                placeholder="enter your password"
-                name="phoneNumber"
-                required
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-        </form> */}
-
         <div className="passenger-container">
           <h3 className="passenger-details">Passenger Details</h3>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              <div component="span" className="passenger-details-container">
-                <div className="passenger-icon-container">
-                  <IoIosContact style={{ height: "30px", width: "30px" }} />
-                </div>
-                <div className="passenger-seat-info-container">
-                  <h4>Passenger 1</h4>
-                  <h6>Upper</h6>
-                </div>
+          {sortedSelectedSeatsList?.map((eachPassengerDetails, index) => {
+            return (
+              <div key={index}>
+                <Accordion key={index}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1-content"
+                    id="panel1-header"
+                  >
+                    <div
+                      component="span"
+                      className="passenger-details-container"
+                    >
+                      <div className="passenger-icon-container">
+                        <IoIosContact
+                          style={{ height: "30px", width: "30px" }}
+                        />
+                      </div>
+                      <div className="passenger-seat-info-container">
+                        <h4>{`Passenger ${index + 1}`}</h4>
+                        <h6>{`Seat ${
+                          eachPassengerDetails?.type === "sleeper"
+                            ? `U${eachPassengerDetails?.id}, Upper Deck`
+                            : `${eachPassengerDetails?.id}, Lower Deck`
+                        }`}</h6>
+                      </div>
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <div className="input-field-alignment-container">
+                      <TextField
+                        variant="outlined"
+                        label="Name"
+                        name="userName"
+                        required
+                        onChange={(e) => handleInputChange(index, e)}
+                        value={passengerDetailsList[index]?.userName || ""}
+                      />
+                      <TextField
+                        variant="outlined"
+                        label="Age"
+                        name="age"
+                        required
+                        onChange={(e) => handleInputChange(index, e)}
+                        value={passengerDetailsList[index]?.age || ""}
+                      />
+                      <TextField
+                        variant="outlined"
+                        label="Gender"
+                        name="gender"
+                        required
+                        onChange={(e) => handleInputChange(index, e)}
+                        value={passengerDetailsList[index]?.gender || ""}
+                      />
+                      <TextField
+                        variant="outlined"
+                        label="Phone Number"
+                        name="phoneNumber"
+                        required
+                        onChange={(e) => handleInputChange(index, e)}
+                        value={passengerDetailsList[index]?.phoneNumber || ""}
+                      />
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
               </div>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div className="input-field-alignment-container">
-                <TextField
-                  variant="outlined"
-                  label="Name"
-                  name="userName"
-                  onChange={handleInputChange}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Age"
-                  name="age"
-                  onChange={handleInputChange}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Gender"
-                  name="Gender"
-                  onChange={handleInputChange}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Phone Number"
-                  name="phoneNumber"
-                  onChange={handleInputChange}
-                />
-              </div>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2-content"
-              id="panel2-header"
-            >
-              <Typography component="span">Accordion 2</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-              eget.
-            </AccordionDetails>
-          </Accordion>
+            );
+          })}
         </div>
 
         <div className="bus-details-container">
@@ -600,6 +941,34 @@ const ModelPopUp = ({
             <div className="primo-content-description-container">
               <h5>Top Handpicked Buses</h5>
               <p>No Extra Charges</p>
+            </div>
+          </div>
+          <div className="bus-details-container-view">
+            <h5>{selectedBusDetails?.bus_name}</h5>
+            <p>
+              {selectedBusDetails?.bus_type === "mixed"
+                ? "Seater / Sleeper(2 + 1)"
+                : "Seater"}
+            </p>
+          </div>
+          <div className="travel-date-container">
+            <div className="from-date">
+              <h5>{`${formatDate(searchBuses?.date)} - ${
+                passengerDetails?.boardingPointTime
+              }`}</h5>
+              <p>{passengerDetails?.boardingPoint}</p>
+            </div>
+            <div style={{ margin: "0rem 3rem" }}>
+              <FaArrowDownLong style={{ color: "grey" }} />
+            </div>
+
+            <div className="from-date">
+              <h5>
+                {`${addOneDay(searchBuses?.date)} - ${
+                  passengerDetails?.dropingPointTime
+                }`}
+              </h5>
+              <p>{passengerDetails?.dropingPoint}</p>
             </div>
           </div>
         </div>
@@ -663,35 +1032,121 @@ const ModelPopUp = ({
             <h4>{searchBuses?.toCity}</h4>
           </div>
           <div className="tabs-container">
-            <h5
+            <button
               className={activeTab === "seats" ? "active-tab" : ""}
               onClick={() => handleTabChange("seats")}
             >
               1. Select seats
-            </h5>
-            <h5
+            </button>
+            <button
               className={activeTab === "board" ? "active-tab" : ""}
-              onClick={() => handleTabChange("board")}
+              // onClick={() => handleTabChange("board")}
+              onClick={
+                selectedSeatsList.length > 0
+                  ? () => handleTabChange("board")
+                  : undefined
+              }
             >
               2. Board/Drop point
-            </h5>
-            <h5
+            </button>
+            <button
               className={activeTab === "info" ? "active-tab" : ""}
-              onClick={() => handleTabChange("info")}
+              //onClick={() => handleTabChange("info")}
+
+              onClick={
+                passengerDetailsList[0]?.boardingPoint?.length > 0 &&
+                passengerDetailsList[0]?.dropingPoint?.length > 0
+                  ? () => handleTabChange("info")
+                  : undefined
+              }
             >
               3. Passenger Info
-            </h5>
+            </button>
           </div>
         </div>
+
         <div className="popup-center-part">
           {tabs?.boardingTab && boardingDropPointing()}
           {tabs?.seatsTab && seatsAlignment()}
           {tabs?.informTab && passengetInfo()}
         </div>
 
-        <div className="popup-bottom-part">
-          <button className="search-btn">Select seats</button>
-        </div>
+        {selectedSeatsList?.length > 0 &&
+          !passengerDetailsList[0]?.dropingPoint?.length > 0 && (
+            <div className="popup-bottom-part">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                  margin: "0rem 1rem",
+                }}
+              >
+                <h5>{`${selectedSeatsList?.length} seats`}</h5>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.1rem",
+                  }}
+                >
+                  <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                  <h4> {totalAmount}</h4>
+                </div>
+              </div>
+
+              <button
+                className="dropping-btn"
+                onClick={() => handleTabChange("board")}
+              >
+                Select boading & dropping points
+              </button>
+            </div>
+          )}
+
+        {passengerDetailsList[0]?.boardingPoint?.length > 0 &&
+          passengerDetailsList[0]?.dropingPoint?.length > 0 && (
+            <div className="popup-bottom-part">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                  margin: "0rem 1rem",
+                }}
+              >
+                <h5>{`${selectedSeatsList?.length} seats`}</h5>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.1rem",
+                  }}
+                >
+                  <FaRupeeSign style={{ fontSize: "0.75rem" }} />
+                  <h4> {totalAmount}</h4>
+                </div>
+              </div>
+
+              {formValid ? (
+                <button className="dropping-btn" onClick={handleBookingTickets}>
+                  Continue booking
+                </button>
+              ) : (
+                <button
+                  className="dropping-btn"
+                  onClick={
+                    passengerDetailsList[0]?.boardingPoint?.length > 0 &&
+                    passengerDetailsList[0]?.dropingPoint?.length > 0
+                      ? () => handleTabChange("info")
+                      : undefined
+                  }
+                >
+                  Fill passenger details
+                </button>
+              )}
+            </div>
+          )}
       </div>
     </div>
   );
