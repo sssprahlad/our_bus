@@ -1,8 +1,10 @@
+const bookingModel = require("../models/bookingModel");
 const BookingModel = require("../models/bookingModel");
 
 exports.getBookingDetails = (req, res) => {
   const { bookings } = req.body;
 
+  // Validate input array
   if (!Array.isArray(bookings) || bookings.length === 0) {
     return res.status(400).json({
       status: 400,
@@ -13,11 +15,13 @@ exports.getBookingDetails = (req, res) => {
   let successCount = 0;
   let failed = [];
   let processed = 0;
+  const total = bookings.length;
 
+  // Process each booking
   bookings.forEach((booking, index) => {
     const {
       busId,
-      seatId,
+      seatNumber,
       userId,
       userName,
       gender,
@@ -27,11 +31,14 @@ exports.getBookingDetails = (req, res) => {
       boardingPoint,
       dropingPoint,
       seatType,
+      // boardingPointTime,
+      // dropingPointTime,
     } = booking;
 
+    // Validate required fields
     if (
       !busId ||
-      !seatId ||
+      !seatNumber ||
       !userId ||
       !userName ||
       !gender ||
@@ -41,10 +48,17 @@ exports.getBookingDetails = (req, res) => {
       !boardingPoint ||
       !dropingPoint ||
       !seatType
+      // !boardingPointTime ||
+      // !dropingPointTime
     ) {
-      failed.push({ index, seatId, reason: "Missing fields" });
+      failed.push({
+        index,
+        seatNumber,
+        reason: "Missing required booking fields",
+      });
+
       processed++;
-      if (processed === bookings.length) {
+      if (processed === total) {
         return res.status(200).json({
           status: 200,
           message: "Booking process completed",
@@ -55,9 +69,10 @@ exports.getBookingDetails = (req, res) => {
       return;
     }
 
+    // Perform DB insert
     BookingModel.addBooking(
       busId,
-      seatId,
+      seatNumber,
       userId,
       userName,
       gender,
@@ -67,16 +82,24 @@ exports.getBookingDetails = (req, res) => {
       boardingPoint,
       dropingPoint,
       seatType,
+      // boardingPointTime,
+      // dropingPointTime,
       (err) => {
         if (err) {
-          failed.push({ index, seatId, seatType, reason: err.message });
+          failed.push({
+            index,
+            seatNumber,
+            seatType,
+            reason: err.message || "Database error",
+          });
         } else {
           successCount++;
         }
 
         processed++;
 
-        if (processed === bookings.length) {
+        // Send final response after processing all bookings
+        if (processed === total) {
           return res.status(200).json({
             status: 200,
             message: "Booking process completed",
@@ -108,5 +131,23 @@ exports.getBookingDetailsByBus = (req, res) => {
     );
   } catch (err) {
     console.error(err.message);
+  }
+};
+
+exports.myBookingsHistory = (req, res) => {
+  const userId = req.params.userId;
+  console.log(userId, "userId");
+  try {
+    bookingModel.myBookingTickets(userId, (err, myBookings) => {
+      if (err) return res.status(500).json({ message: "Database error" });
+
+      return res.status(200).json({
+        status: 200,
+        message: "User booking tickets successfully.",
+        myBookings: myBookings,
+      });
+    });
+  } catch (error) {
+    console.error(error.message);
   }
 };

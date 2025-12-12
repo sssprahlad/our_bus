@@ -61,10 +61,15 @@ const Register = () => {
       <form className="form-container" onSubmit={handleRegister}>
         <div className="org-container">
           <div className="bg-icon">
-            <FaBusAlt style={{ color: "#ffffff", fontSize: "1.2rem" }} />
+            {/* <FaBusAlt style={{ color: "#ffffff", fontSize: "1.2rem" }} /> */}
+            <img
+              src="/images/bus-logo.png"
+              alt="logo"
+              style={{ height: "50px", width: "50px" }}
+            />
           </div>
-          <h2>HRMS Portal</h2>
-          <p>Manage your organization efficiently</p>
+          <h2>Register</h2>
+          {/* <p>Manage your organization efficiently</p> */}
         </div>
         <div className="form-controll">
           <label htmlFor="userName">Username</label>

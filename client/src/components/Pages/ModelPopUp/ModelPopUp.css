@@ -51,19 +51,37 @@
 }
 .tabs-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
   padding: 1rem;
-  gap: 1.5rem;
+  width: 100%;
 }
+
+@media (min-width: 769px) {
+  .tabs-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 1rem;
+    width: 100%;
+  }
+  .tabs-container button {
+    flex: 0 0 auto;
+    font-size: 1.1rem;
+  }
+}
+
 .tabs-container button {
-  font-size: 1.1rem;
+  flex: 0 0 auto;
+  font-size: 1rem;
   cursor: pointer;
   background: transparent;
   border: none;
   outline: none;
-  /* color: #4b4b4b; */
-  /* color: #797777; */
+  padding: 0.5rem 1rem;
 }
 
 .popup-center-part {
@@ -95,6 +113,26 @@
   justify-content: center;
   gap: 2rem;
   width: 100%;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .boarding-droping-main-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .boarding-point-container {
+    width: 100%;
+  }
+
+  .drop-point-container {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .time-point-container p {
+    font-size: 0.9rem;
+  }
 }
 
 .boading-point-container {
@@ -137,6 +175,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  margin: 0.6rem 0rem;
 }
 .time-point-container p {
   color: black;
@@ -146,12 +185,13 @@
 .input-radio {
   appearance: none;
   -webkit-appearance: none;
-  width: 12px !important;
-  height: 12px !important;
+  width: 20px !important;
+  height: 20px !important;
   border: 2px solid #555;
   border-radius: 50%;
   cursor: pointer;
   position: relative;
+  display: inline-block;
 }
 
 .input-radio:checked {
@@ -160,14 +200,26 @@
 
 .input-radio:checked::before {
   content: "";
-  width: 13px;
-  height: 13px;
+  width: 12px !important;
+  height: 12px !important;
   background-color: #d63941;
   border-radius: 50%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+@media (max-width: 600px) {
+  .input-radio {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .input-radio:checked::before {
+    width: 14px !important;
+    height: 14px !important;
+  }
 }
 
 .boarding-point-container {
@@ -179,21 +231,25 @@
   height: fit-content;
 }
 
-/* seats */
-
 .seats-main-container {
   display: flex;
   /* justify-content: space-between; */
   /* width: 40%; */
-  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  /* overflow: auto; */
+  /* background: plum; */
 }
 .seats-container {
-  display: flex;
+  /* display: flex; */
+  flex: 0 0 auto;
   flex-direction: column;
   padding: 1rem;
   background: white;
   border-radius: 8px;
-  width: 200px;
+  width: 210px;
   height: fit-content;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
@@ -220,7 +276,7 @@
 .sleeper-row-container {
   display: flex;
   justify-content: space-between;
-  margin: 0.4rem 0rem;
+  margin: 0.5rem 0rem;
   /* flex-direction: column; */
 }
 
@@ -301,6 +357,9 @@
 .seats-infomation-cont {
   display: flex;
   flex-direction: column;
+  min-width: 300px;
+  overflow: auto;
+  border-radius: 8px;
   /* justify-content: center; */
 }
 .seats-infomation-cont h3 {
@@ -312,7 +371,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  /* background-color: #ffffff; */
+  background-color: #ffffff;
   background-color: var(--bg-dark);
   /* box-shadow: 0 2px 20px rgba(255, 255, 255, 0.1); */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -333,7 +392,7 @@ th {
 
 td {
   padding: 1rem;
-  /* background: #ffffff; */
+  background: #ffffff;
   /* color: #333; */
   color: #4b4b4b;
   font-weight: 600;
@@ -343,7 +402,7 @@ td {
 }
 
 th {
-  /* background-color: white; */
+  background-color: white;
   font-weight: 700;
   color: #333;
   text-transform: capitalize;
@@ -386,13 +445,13 @@ th {
   color: rgb(55 65 81);
   font-weight: 400;
 }
-.bg-icon {
+/* .bg-icon {
   background: #4f46e5;
   padding: 1rem;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-}
+} */
 
 .form-group {
   display: flex;
@@ -437,7 +496,6 @@ th {
 }
 
 .span-text {
-  /* color: rgba(0, 0, 0, 0.6); */
   text-align: center;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.7rem;
@@ -533,4 +591,50 @@ th {
   background: #d63941;
   font-weight: bold;
   cursor: pointer;
+}
+
+.bus-details-container-view {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid rgb(238, 231, 231);
+  gap: 0.5rem;
+}
+.bus-details-container-view h5 {
+  font-size: 1.1rem;
+}
+.bus-details-container-view p {
+  font-size: 0.875rem;
+  color: #494b4c;
+  font-weight: 600;
+  padding-bottom: 0.4rem;
+}
+.travel-date-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.from-date h5 {
+  font-size: 1rem;
+}
+.from-date p {
+  font-weight: 600;
+  color: #494b4c;
+  font-size: 0.875rem;
+}
+
+.scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.scroll-content {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  min-width: max-content;
 }

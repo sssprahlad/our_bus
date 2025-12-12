@@ -33,21 +33,35 @@ db.run(`CREATE TABLE IF NOT EXISTS buses(
     )
     `);
 
-db.run(`CREATE TABLE IF NOT EXISTS seats(
+db.run(`
+  CREATE TABLE IF NOT EXISTS seats(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     bus_id INTEGER NOT NULL,
     seat_number TEXT NOT NULL,
     seat_type TEXT NOT NULL,
-    is_available INTEGER DEFAULT 1,
     FOREIGN KEY (bus_id) REFERENCES buses(id)
+  )
+`);
 
-    )`);
+db.run(`
+CREATE TABLE IF NOT EXISTS seat_availability (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    seat_number TEXT NOT NULL,
+    bus_id INTEGER NOT NULL,
+    seat_type TEXT NOT NULL,
+    travel_date TEXT NOT NULL,
+    is_available INTEGER DEFAULT 1,
+    UNIQUE(seat_number, bus_id, travel_date),
+    FOREIGN KEY (seat_number) REFERENCES seats(seat_number),
+    FOREIGN KEY (bus_id) REFERENCES buses(id)
+)
+`);
 
 db.run(`
     CREATE TABLE IF NOT EXISTS bookings(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     bus_id INTEGER NOT NULL,
-    seat_id INTEGER NOT NULL,
+    seat_number INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     user_name TEXT NOT NULL,
     gender TEXT NOT NULL,
@@ -58,7 +72,7 @@ db.run(`
     droping_point TEXT NOT NULL,
     seat_type TEXT NOT NULL,
     FOREIGN KEY (bus_id) REFERENCES buses(id),
-    FOREIGN KEY (seat_id) REFERENCES seats(id),
+    FOREIGN KEY (seat_number) REFERENCES seats(seat_number),
     FOREIGN KEY (user_id) REFERENCES users(id)
 
     )
@@ -72,4 +86,6 @@ db.run(`CREATE TABLE IF NOT EXISTS bus_stops(
         FOREIGN KEY (bus_id) REFERENCES buses(id)
         )`);
 
+// boarding_point_time TEXT NOT NULL,
+// droping_point_time TEXT NOT NULL,
 module.exports = db;

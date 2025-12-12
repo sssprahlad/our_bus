@@ -8,7 +8,11 @@ const authMiddleware = (req, res, next) => {
     res.status(400).json({ message: "No Token Provided" });
   }
 
+  console.log(authHeader, "auth header");
+
   const token = authHeader.split(" ")[1];
+
+  console.log(token, "token");
 
   if (!token) return res.status(401).json({ message: "No Token Provided" });
 

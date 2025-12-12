@@ -21,24 +21,6 @@ const Home = () => {
   const [popUp, setPopUp] = useState(false);
   const [selectedBusDetails, setSelectedBusDetails] = useState();
 
-  // const fetchAllBuses = async () => {
-  //   const response = await fetch(GET_BUSES_API, {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //     },
-  //   });
-  //   const data = await response.json();
-  //   if (data.status === 200) {
-  //     setBusDetails(data.allBus);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAllBuses();
-  // }, []);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchBuses({
@@ -66,6 +48,7 @@ const Home = () => {
       setBusDetails(data?.buses);
     }
   };
+  const today = new Date().toISOString().split("T")[0];
 
   console.log(busDetails, "bus details");
   console.log(searchBuses, "seachBuses");
@@ -74,9 +57,55 @@ const Home = () => {
   return (
     <div className="main-container">
       <Navbar />
+      <div className="search-container">
+        <select
+          className="search-container-select"
+          value={searchBuses?.fromCity}
+          name="fromCity"
+          onChange={handleInputChange}
+        >
+          <option>From</option>
+          {busDrops?.map((eachDetails) => (
+            <option
+              key={eachDetails?.city}
+              value={eachDetails.city.toLowerCase()}
+            >
+              {eachDetails?.city}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="search-container-select"
+          value={searchBuses?.toCity}
+          name="toCity"
+          onChange={handleInputChange}
+        >
+          <option>To</option>
+          {busDrops?.map((eachDetails) => (
+            <option
+              key={eachDetails?.city}
+              value={eachDetails.city.toLowerCase()}
+            >
+              {eachDetails?.city}
+            </option>
+          ))}
+        </select>
+        <input
+          className="search-container-select"
+          type="date"
+          name="date"
+          min={today}
+          onChange={handleInputChange}
+        />
+
+        <button className="search-btn" onClick={handleSearchBuses}>
+          Search
+        </button>
+      </div>
       <div className="main-sub-container">
-        <div className="search-container">
-          {/* <div className=""> */}
+        {/* <div className="search-container">
+        
           <select
             value={searchBuses?.fromCity}
             name="fromCity"
@@ -108,89 +137,174 @@ const Home = () => {
               </option>
             ))}
           </select>
-          <input type="date" name="date" onChange={handleInputChange} />
-          {/* </div> */}
+          <input
+            type="date"
+            name="date"
+            min={today}
+            onChange={handleInputChange}
+          />
+         
           <button className="search-btn" onClick={handleSearchBuses}>
             Search
           </button>
-        </div>
+        </div> */}
         <div className="bus-details-main-container">
-          {busDetails?.map((eachBus) => {
-            const ratingsData = [
-              { rating: 4.7, persons: 520 },
-              { rating: 4.3, persons: 310 },
-              { rating: 3.9, persons: 150 },
-              { rating: 4.8, persons: 780 },
-              { rating: 3.6, persons: 220 },
-              { rating: 4.1, persons: 405 },
-              { rating: 2.9, persons: 90 },
-              { rating: 5.0, persons: 1020 },
-              { rating: 3.4, persons: 343 },
-              { rating: 4.6, persons: 610 },
-            ];
+          {busDetails?.length === 0 ? (
+            <h3 style={{ textAlign: "center" }}>No Buses Found</h3>
+          ) : (
+            <div>
+              {busDetails?.map((eachBus) => {
+                const ratingsData = [
+                  { rating: 4.7, persons: 520 },
+                  { rating: 4.3, persons: 310 },
+                  { rating: 3.9, persons: 150 },
+                  { rating: 4.8, persons: 780 },
+                  { rating: 3.6, persons: 220 },
+                  { rating: 4.1, persons: 405 },
+                  { rating: 2.9, persons: 90 },
+                  { rating: 5.0, persons: 1020 },
+                  { rating: 3.4, persons: 343 },
+                  { rating: 4.6, persons: 610 },
+                ];
 
-            const ratings =
-              ratingsData[Math.floor(Math.random() * ratingsData.length)];
+                const ratings =
+                  ratingsData[Math.floor(Math.random() * ratingsData.length)];
 
-            return (
-              <div className="bus-container" key={eachBus?.id}>
-                <div className="bus-cart-1">
-                  <h3 className="bus-name">{eachBus?.bus_name}</h3>
-                  <h4 className="bus-type">{eachBus?.bus_type}</h4>
-                </div>
+                return (
+                  <div>
+                    <div className="bus-container" key={eachBus?.id}>
+                      <div className="bus-cart-1">
+                        <h3 className="bus-name">{eachBus?.bus_name}</h3>
+                        <h4 className="bus-type">
+                          {eachBus?.bus_type === "mixed"
+                            ? "Sleeper, 2 + 1 Seater"
+                            : eachBus?.bus_type}
+                        </h4>
+                      </div>
 
-                <div className="bus-cart-2">
-                  <div className="rating-container">
-                    <div className="rating-btn">
-                      <FaStar style={{ color: "white" }} />
-                      <p>{ratings?.rating}</p>
+                      <div className="bus-cart-2">
+                        <div className="rating-container">
+                          <div className="rating-btn">
+                            <FaStar style={{ color: "white" }} />
+                            <p>{ratings?.rating}</p>
+                          </div>
+                          <p>{ratings?.persons}</p>
+                        </div>
+
+                        <div className="boarding-duration-container">
+                          <div className="boarding-container">
+                            <p className="pickup-point">
+                              {eachBus?.departure_time}
+                            </p>{" "}
+                            <FaMinus style={{ color: "lightgray" }} />
+                            <p className="droping-point">
+                              {eachBus?.arrival_time}
+                            </p>
+                          </div>
+                          <div className="duration-container">
+                            {eachBus?.duration}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bus-cart-3">
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "1rem",
+                          }}
+                        >
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <FaRupeeSign
+                              style={{
+                                fontSize: "1.1rem",
+                                marginBottom: "-2px",
+                              }}
+                            />
+                            <p className="price">{eachBus?.seat_price}</p>
+                          </div>
+
+                          <button
+                            className="view-seats-btn"
+                            onClick={() => {
+                              setPopUp(true);
+                              setSelectedBusDetails(eachBus);
+                            }}
+                          >
+                            View seats
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <p>{ratings?.persons}</p>
-                  </div>
 
-                  <div className="boarding-duration-container">
-                    <div className="boarding-container">
-                      <p className="pickup-point">{eachBus?.departure_time}</p>{" "}
-                      <FaMinus style={{ color: "lightgray" }} />
-                      <p className="droping-point">{eachBus?.arrival_time}</p>
-                    </div>
-                    <div className="duration-container">
-                      {eachBus?.duration}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bus-cart-3">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "1rem",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <FaRupeeSign
-                        style={{ fontSize: "1.1rem", marginBottom: "-2px" }}
-                      />
-                      <p className="price">{eachBus?.seat_price}</p>
-                    </div>
-
-                    <button
-                      className="view-seats-btn"
+                    {/* <div className="mobile-card-view"> */}
+                    <div
+                      className="mobile-card"
+                      key={eachBus?.id}
                       onClick={() => {
                         setPopUp(true);
                         setSelectedBusDetails(eachBus);
                       }}
                     >
-                      View seats
-                    </button>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <div className="boarding-container">
+                          <p className="pickup-point">
+                            {eachBus?.departure_time}
+                          </p>{" "}
+                          <FaMinus style={{ color: "lightgray" }} />
+                          <p className="droping-point">
+                            {eachBus?.arrival_time}
+                          </p>
+                        </div>
+                        <div className="bus-cart">
+                          <h3 className="bus-name">{eachBus?.bus_name}</h3>
+                          <h4 className="bus-type">
+                            {" "}
+                            {eachBus?.bus_type === "mixed"
+                              ? "Sleeper, 2 + 1 Seater"
+                              : eachBus?.bus_type}
+                          </h4>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <div className="rating-container">
+                          <div className="rating-btn">
+                            <FaStar style={{ color: "white" }} />
+                            <p>{ratings?.rating}</p>
+                          </div>
+                          <p>{ratings?.persons}</p>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FaRupeeSign
+                            style={{ fontSize: "1.1rem", marginBottom: "-2px" }}
+                          />
+                          <p className="price">{eachBus?.seat_price}</p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* </div> */}
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
       {popUp && (

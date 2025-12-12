@@ -34,14 +34,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #4f46e5;
+  /* background: #4f46e5; */
+  /* background: #87b7ed; */
+  border: 2px solid #d63941;
   padding: 1rem;
-  width: 50px;
-  height: 50px;
+  /* width: 50px;
+  height: 50px; */
   border-radius: 50%;
 }
 .form-container button {
-  background: #4f46e5;
+  background: #d63941;
   padding: 0.7rem;
   color: #ffffff;
   border: none;
@@ -65,7 +67,7 @@
 }
 
 .form-controll input {
-  padding: 0.5rem 0.8rem;
+  padding: 0.875rem 0.8rem;
   /* width: 100%; */
   cursor: pointer;
   border: 1px solid black;

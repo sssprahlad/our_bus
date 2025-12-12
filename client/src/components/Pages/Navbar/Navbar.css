@@ -9,6 +9,7 @@
   border-bottom: 1px dotted black;
   padding: 0.875rem 2rem;
   background: white;
+  /* width: 100%; */
 }
 
 .row-container {
@@ -25,6 +26,7 @@
 .logo {
   height: 75px;
   width: 75px;
+  cursor: pointer;
 }
 
 .image-containers {

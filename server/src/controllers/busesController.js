@@ -68,9 +68,10 @@ exports.addBusDetails = (req, res) => {
             .status(400)
             .json({ status: 400, message: "failed to add bus details" });
 
-        return res
-          .status(200)
-          .json({ status: 200, message: "bus details added successfully" });
+        return res.status(200).json({
+          status: 200,
+          message: `${busName} bus details added successfully`,
+        });
       }
     );
   } catch (error) {
