@@ -17,7 +17,6 @@ module.exports = {
   ) => {
     const normalizedSeatType = seatType.toLowerCase();
 
-    // 1 Validate seat exists for this bus
     db.get(
       `SELECT seat_number, LOWER(seat_type) AS seat_type
    FROM seats
@@ -30,12 +29,10 @@ module.exports = {
           return callback(new Error("Seat not found for this bus"));
         }
 
-        // 2️⃣ Validate seat type matches
         if (seatRow.seat_type !== normalizedSeatType) {
           return callback(new Error("Seat type mismatch"));
         }
 
-        // 3️⃣ Check if already booked for this date
         db.get(
           `SELECT is_available
          FROM seat_availability
@@ -48,7 +45,6 @@ module.exports = {
               return callback(new Error("Seat already booked on this date"));
             }
 
-            // 4️⃣ Mark seat as booked
             db.run(
               `INSERT INTO seat_availability
                (seat_number, bus_id, seat_type, travel_date, is_available)
@@ -59,7 +55,6 @@ module.exports = {
               (err3) => {
                 if (err3) return callback(err3);
 
-                // 5️⃣ Insert booking record
                 db.run(
                   `INSERT INTO bookings
                 (bus_id, seat_number, user_id, user_name, gender, age, phone_number,
