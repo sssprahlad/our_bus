@@ -14,6 +14,9 @@
 }
 
 .search-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 1rem;
   border: none;
   outline: none;

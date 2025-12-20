@@ -17,6 +17,7 @@ const Home = () => {
     toCity: "",
     date: "",
   });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [popUp, setPopUp] = useState(false);
   const [selectedBusDetails, setSelectedBusDetails] = useState();
@@ -30,6 +31,8 @@ const Home = () => {
   };
 
   const handleSearchBuses = async () => {
+    setLoading(true);
+
     const params = new URLSearchParams(searchBuses).toString();
     // fetch(`${SEARCH_BUSES_API}?${params}`
 
@@ -45,6 +48,7 @@ const Home = () => {
     const data = await response.json();
     console.log(data, "search buses data");
     if (data?.status === 200) {
+      setLoading(false);
       setBusDetails(data?.buses);
     }
   };
@@ -100,7 +104,7 @@ const Home = () => {
         />
 
         <button className="search-btn" onClick={handleSearchBuses}>
-          Search
+          {`${loading ? <div className="spinne"></div> : "Search"}`}
         </button>
       </div>
       <div className="main-sub-container">
