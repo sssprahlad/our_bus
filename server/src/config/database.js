@@ -1,9 +1,16 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
-const db = new sqlite3.Database("../bus.db", (err) => {
-  if (err) console.error("Data connection failed : ", err.message);
-  else console.log("Database Connectted Successfully.");
+// const db = new sqlite3.Database("../bus.db", (err) => {
+//   if (err) console.error("Data connection failed : ", err.message);
+//   else console.log("Database Connectted Successfully.");
+// });
+
+const dbPath = path.join(__dirname, "../../bus.db");
+
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) console.error("Database connection failed:", err.message);
+  else console.log("Database Connected Successfully.");
 });
 
 db.run(`

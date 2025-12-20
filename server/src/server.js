@@ -1,4 +1,6 @@
-require("dotenv").config();
+//require("dotenv").config();
+
+require("dotenv").config({ path: "../.env" });
 
 const express = require("express");
 const cors = require("cors");
@@ -8,7 +10,7 @@ const bookingRouter = require("./routers/bookingRouter");
 const searchRouter = require("./routers/searchBusesRouter");
 const authMiddleware = require("./middleware/authMiddleware");
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5050;
 
 const app = express();
 
