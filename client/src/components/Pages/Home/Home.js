@@ -104,7 +104,7 @@ const Home = () => {
         />
 
         <button className="search-btn" onClick={handleSearchBuses}>
-          {`${loading ? <div className="spinner"></div> : "Search"}`}
+          {loading ? <div className="spinner"></div> : "Search"}
         </button>
       </div>
       <div className="main-sub-container">
