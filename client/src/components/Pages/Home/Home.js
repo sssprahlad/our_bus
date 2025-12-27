@@ -156,7 +156,13 @@ const Home = () => {
           {busDetails?.length === 0 ? (
             <h3 style={{ textAlign: "center" }}>No Buses Found</h3>
           ) : (
-            <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
               {busDetails?.map((eachBus) => {
                 const ratingsData = [
                   { rating: 4.7, persons: 520 },
@@ -175,13 +181,7 @@ const Home = () => {
                   ratingsData[Math.floor(Math.random() * ratingsData.length)];
 
                 return (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "1.5rem",
-                    }}
-                  >
+                  <div>
                     <div className="bus-container" key={eachBus?.id}>
                       <div className="bus-cart-1">
                         <h3 className="bus-name">{eachBus?.bus_name}</h3>
