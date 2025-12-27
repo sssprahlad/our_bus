@@ -175,7 +175,13 @@ const Home = () => {
                   ratingsData[Math.floor(Math.random() * ratingsData.length)];
 
                 return (
-                  <div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "1.5rem",
+                    }}
+                  >
                     <div className="bus-container" key={eachBus?.id}>
                       <div className="bus-cart-1">
                         <h3 className="bus-name">{eachBus?.bus_name}</h3>
