@@ -61,12 +61,25 @@ const Home = () => {
   return (
     <div className="main-container">
       <Navbar />
+      <div className="search-container-note">
+        <span style={{ color: "red", fontWeight: "bold" }}> Note :-</span>{" "}
+        Please search buses only from
+        <span style={{ color: "red", fontWeight: "bold" }}>
+          {" "}
+          Kakinada
+        </span> to{" "}
+        <span style={{ color: "blue", fontWeight: "bold" }}>
+          Samarlakota, Eluru, Vijayawada, Hyderabad.
+        </span>
+      </div>
+
       <div className="search-container">
         <select
           className="search-container-select"
           value={searchBuses?.fromCity}
           name="fromCity"
           onChange={handleInputChange}
+          required
         >
           <option>From</option>
           {busDrops?.map((eachDetails) => (
@@ -84,6 +97,7 @@ const Home = () => {
           value={searchBuses?.toCity}
           name="toCity"
           onChange={handleInputChange}
+          required
         >
           <option>To</option>
           {busDrops?.map((eachDetails) => (
@@ -101,6 +115,7 @@ const Home = () => {
           name="date"
           min={today}
           onChange={handleInputChange}
+          required
         />
 
         <button className="search-btn" onClick={handleSearchBuses}>
