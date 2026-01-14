@@ -9,6 +9,7 @@ import MyBookings from "./components/Pages/MyBookings/MyBookings";
 import Account from "./components/Pages/Account/Account";
 import Contact from "./components/Pages/Contact/Contact";
 import Help from "./components/Pages/Help/Help";
+import TicketBookingPopup from "./components/TicketBookingPopup/TicketBookingPopup";
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
             <Route path="/my-account" element={<Account />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
+            <Route
+              path="/ticket-booking-popup"
+              element={<TicketBookingPopup />}
+            />
           </Route>
         </Routes>
       </Router>

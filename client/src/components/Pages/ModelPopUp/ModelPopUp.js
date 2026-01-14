@@ -10,6 +10,7 @@ import { IoIosContact } from "react-icons/io";
 import { FaArrowDownLong } from "react-icons/fa6";
 import Radio from "@mui/material/Radio";
 import { pink } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 
 import {
   Accordion,
@@ -45,6 +46,7 @@ const ModelPopUp = ({
     dropingPointTime: "",
   });
 
+  const navigate = useNavigate();
   const [bookedSeats, setBookedSeats] = useState([]);
 
   const [formValid, setFormValid] = useState(false);
@@ -258,7 +260,7 @@ const ModelPopUp = ({
           return {
             id: seatId,
             selected: false,
-            isBooked: !!booked, // booked only if travel_date matches
+            isBooked: !!booked,
             gender: booked?.gender || null,
           };
         })
@@ -819,7 +821,10 @@ const ModelPopUp = ({
       const data = await response.json();
       if (data?.status === 200) {
         setPopUp(false);
-        fetchBoogingSeatsData();
+        setTimeout(() => {
+          navigate("/ticket-booking-popup");
+        }, 1000);
+        // fetchBoogingSeatsData();
       }
 
       console.log(data, "booking results");
